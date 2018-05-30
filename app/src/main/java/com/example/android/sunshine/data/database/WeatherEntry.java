@@ -16,11 +16,16 @@
 
 package com.example.android.sunshine.data.database;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
 import java.util.Date;
 
-public class WeatherEntry {
+@Entity(tableName = "weather", indices = { @Index(value = { "date" }, unique = true) }) public class WeatherEntry {
 
-    private int id;
+    @PrimaryKey(autoGenerate = true) private int id;
+
     private int weatherIconId;
     private Date date;
     private double min;
@@ -33,6 +38,7 @@ public class WeatherEntry {
     /**
      * This constructor is used by OpenWeatherJsonParser. When the network fetch has JSON data, it
      * converts this data to WeatherEntry objects using this constructor.
+     *
      * @param weatherIconId Image id for weather
      * @param date Date of weather
      * @param min Min temperature
@@ -42,7 +48,22 @@ public class WeatherEntry {
      * @param wind Wind speed
      * @param degrees Wind direction
      */
-    public WeatherEntry(int weatherIconId, Date date, double min, double max, double humidity, double pressure, double wind, double degrees) {
+    @Ignore public WeatherEntry(int weatherIconId, Date date, double min, double max, double humidity, double pressure,
+            double wind, double degrees) {
+        this.weatherIconId = weatherIconId;
+        this.date = date;
+        this.min = min;
+        this.max = max;
+        this.humidity = humidity;
+        this.pressure = pressure;
+        this.wind = wind;
+        this.degrees = degrees;
+    }
+
+    // Room Access
+    public WeatherEntry(int id, int weatherIconId, Date date, double min, double max, double humidity, double pressure,
+            double wind, double degrees) {
+        this.id = id;
         this.weatherIconId = weatherIconId;
         this.date = date;
         this.min = min;
