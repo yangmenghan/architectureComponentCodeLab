@@ -18,6 +18,7 @@ package com.example.android.sunshine.data.network;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+import com.example.android.sunshine.utilities.InjectorUtils;
 
 /**
  * An {@link IntentService} subclass for immediately scheduling a sync with the server off of the
@@ -32,9 +33,9 @@ public class SunshineSyncIntentService extends IntentService {
         super("SunshineSyncIntentService");
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
+    @Override protected void onHandleIntent(Intent intent) {
         Log.d(LOG_TAG, "Intent service started");
-        // TODO Finish this method when instructed. Will eventually call the fetch weather code
+        WeatherNetworkDataSource networkDataSource = InjectorUtils.provideNetworkDataSource(this);
+        networkDataSource.fetchWeather();
     }
 }

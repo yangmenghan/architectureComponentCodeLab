@@ -15,11 +15,12 @@
  */
 package com.example.android.sunshine.data.network;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
 import com.example.android.sunshine.AppExecutors;
+import com.example.android.sunshine.data.database.WeatherEntry;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -27,7 +28,6 @@ import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
-
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
@@ -52,10 +52,13 @@ public class WeatherNetworkDataSource {
     private final Context mContext;
 
     private final AppExecutors mExecutors;
+    // LiveData storing the latest downloaded weather forecastsng the latest downloaded weather forecasts
+    private MutableLiveData<WeatherEntry[]> mDownloadedWeatherForecasts;
 
     private WeatherNetworkDataSource(Context context, AppExecutors executors) {
         mContext = context;
         mExecutors = executors;
+        mDownloadedWeatherForecasts = new MutableLiveData<>();
     }
 
     /**
@@ -117,9 +120,8 @@ public class WeatherNetworkDataSource {
                  * which the data should be synced. Please note that this end time is not
                  * guaranteed, but is more of a guideline for FirebaseJobDispatcher to go off of.
                  */
-                .setTrigger(Trigger.executionWindow(
-                        SYNC_INTERVAL_SECONDS,
-                        SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
+                .setTrigger(
+                        Trigger.executionWindow(SYNC_INTERVAL_SECONDS, SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
                 /*
                  * If a Job with the tag with provided already exists, this new job will replace
                  * the old one.
@@ -131,6 +133,10 @@ public class WeatherNetworkDataSource {
         // Schedule the Job with the dispatcher
         dispatcher.schedule(syncSunshineJob);
         Log.d(LOG_TAG, "Job scheduled");
+    }
+
+    public MutableLiveData<WeatherEntry[]> getCurrentWeatherForecasts() {
+        return mDownloadedWeatherForecasts;
     }
 
     /**
@@ -154,19 +160,17 @@ public class WeatherNetworkDataSource {
                 WeatherResponse response = new OpenWeatherJsonParser().parse(jsonWeatherResponse);
                 Log.d(LOG_TAG, "JSON Parsing finished");
 
-
                 // As long as there are weather forecasts, update the LiveData storing the most recent
                 // weather forecasts. This will trigger observers of that LiveData, such as the
                 // SunshineRepository.
                 if (response != null && response.getWeatherForecast().length != 0) {
-                    Log.d(LOG_TAG, "JSON not null and has " + response.getWeatherForecast().length
-                            + " values");
-                    Log.d(LOG_TAG, String.format("First value is %1.0f and %1.0f",
-                            response.getWeatherForecast()[0].getMin(),
-                            response.getWeatherForecast()[0].getMax()));
+                    Log.d(LOG_TAG, "JSON not null and has " + response.getWeatherForecast().length + " values");
+                    Log.d(LOG_TAG,
+                            String.format("First value is %1.0f and %1.0f", response.getWeatherForecast()[0].getMin(),
+                                    response.getWeatherForecast()[0].getMax()));
 
-                    // TODO Finish this method when instructed.
                     // Will eventually do something with the downloaded data
+                    mDownloadedWeatherForecasts.postValue(response.getWeatherForecast());
                 }
             } catch (Exception e) {
                 // Server probably invalid
@@ -174,5 +178,4 @@ public class WeatherNetworkDataSource {
             }
         });
     }
-
 }
