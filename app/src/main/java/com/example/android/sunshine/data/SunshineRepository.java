@@ -21,6 +21,7 @@ import android.util.Log;
 import com.example.android.sunshine.AppExecutors;
 import com.example.android.sunshine.data.database.WeatherDao;
 import com.example.android.sunshine.data.database.WeatherEntry;
+import com.example.android.sunshine.data.database.WeatherSummaryEntry;
 import com.example.android.sunshine.data.network.WeatherNetworkDataSource;
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 import java.util.Date;
@@ -120,7 +121,7 @@ public class SunshineRepository {
         return mWeatherDao.getWeatherByDate(date);
     }
 
-    public LiveData<List<WeatherEntry>> getWeathersForecasts(Date date) {
+    public LiveData<List<WeatherSummaryEntry>> getWeathersForecasts(Date date) {
         initializeData();
         return mWeatherDao.getWeathersAfterDate(date);
     }

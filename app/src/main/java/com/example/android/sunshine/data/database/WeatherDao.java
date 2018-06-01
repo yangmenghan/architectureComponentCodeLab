@@ -18,5 +18,6 @@ import java.util.List;
 
     @Query("DELETE FROM weather WHERE date < :date") void deleteOldData(Date date);
 
-    @Query("SELECT * FROM weather WHERE date > :date") LiveData<List<WeatherEntry>> getWeathersAfterDate(Date date);
+    @Query("SELECT id, weatherIconId, min, max, date FROM weather WHERE date > :date")
+    LiveData<List<WeatherSummaryEntry>> getWeathersAfterDate(Date date);
 }

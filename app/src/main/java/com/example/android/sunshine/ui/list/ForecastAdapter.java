@@ -23,17 +23,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.android.sunshine.R;
-import com.example.android.sunshine.data.database.WeatherEntry;
+import com.example.android.sunshine.data.database.WeatherSummaryEntry;
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 import com.example.android.sunshine.utilities.SunshineWeatherUtils;
-
 import java.util.Date;
 import java.util.List;
 
 /**
- * Exposes a list of weather forecasts from a list of {@link WeatherEntry} to a {@link RecyclerView}.
+ * Exposes a list of weather forecasts from a list of {@link WeatherSummaryEntry} to a {@link RecyclerView}.
  */
 class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> {
 
@@ -57,14 +55,14 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      * boolean resources.
      */
     private final boolean mUseTodayLayout;
-    private List<WeatherEntry> mForecast;
+    private List<WeatherSummaryEntry> mForecast;
 
     /**
      * Creates a ForecastAdapter.
      *
-     * @param context      Used to talk to the UI and app resources
+     * @param context Used to talk to the UI and app resources
      * @param clickHandler The on-click handler for this adapter. This single handler is called
-     *                     when an item is clicked.
+     * when an item is clicked.
      */
     ForecastAdapter(@NonNull Context context, ForecastAdapterOnItemClickHandler clickHandler) {
         mContext = context;
@@ -77,14 +75,13 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
      * @param viewGroup The ViewGroup that these ViewHolders are contained within.
-     * @param viewType  If your RecyclerView has more than one type of item (like ours does) you
-     *                  can use this viewType integer to provide a different layout. See
-     *                  {@link android.support.v7.widget.RecyclerView.Adapter#getItemViewType(int)}
-     *                  for more details.
+     * @param viewType If your RecyclerView has more than one type of item (like ours does) you
+     * can use this viewType integer to provide a different layout. See
+     * {@link android.support.v7.widget.RecyclerView.Adapter#getItemViewType(int)}
+     * for more details.
      * @return A new ForecastAdapterViewHolder that holds the View for each list item
      */
-    @Override
-    public ForecastAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    @Override public ForecastAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         int layoutId = getLayoutIdByType(viewType);
         View view = LayoutInflater.from(mContext).inflate(layoutId, viewGroup, false);
@@ -99,12 +96,11 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      * passed into us.
      *
      * @param forecastAdapterViewHolder The ViewHolder which should be updated to represent the
-     *                                  contents of the item at the given position in the data set.
-     * @param position                  The position of the item within the adapter's data set.
+     * contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
      */
-    @Override
-    public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
-        WeatherEntry currentWeather = mForecast.get(position);
+    @Override public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
+        WeatherSummaryEntry currentWeather = mForecast.get(position);
 
         /****************
          * Weather Icon *
@@ -117,20 +113,20 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
          * Weather Date *
          ****************/
         long dateInMillis = currentWeather.getDate().getTime();
-         /* Get human readable string using our utility method */
+        /* Get human readable string using our utility method */
         String dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateInMillis, false);
 
-         /* Display friendly date string */
+        /* Display friendly date string */
         forecastAdapterViewHolder.dateView.setText(dateString);
 
         /***********************
          * Weather Description *
          ***********************/
         String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherIconId);
-         /* Create the accessibility (a11y) String from the weather description */
+        /* Create the accessibility (a11y) String from the weather description */
         String descriptionA11y = mContext.getString(R.string.a11y_forecast, description);
 
-         /* Set the text and content description (for accessibility purposes) */
+        /* Set the text and content description (for accessibility purposes) */
         forecastAdapterViewHolder.descriptionView.setText(description);
         forecastAdapterViewHolder.descriptionView.setContentDescription(descriptionA11y);
 
@@ -138,16 +134,16 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
          * High (max) temperature *
          **************************/
         double highInCelsius = currentWeather.getMax();
-         /*
-          * If the user's preference for weather is fahrenheit, formatTemperature will convert
-          * the temperature. This method will also append either °C or °F to the temperature
-          * String.
-          */
+        /*
+         * If the user's preference for weather is fahrenheit, formatTemperature will convert
+         * the temperature. This method will also append either °C or °F to the temperature
+         * String.
+         */
         String highString = SunshineWeatherUtils.formatTemperature(mContext, highInCelsius);
-         /* Create the accessibility (a11y) String from the weather description */
+        /* Create the accessibility (a11y) String from the weather description */
         String highA11y = mContext.getString(R.string.a11y_high_temp, highString);
 
-         /* Set the text and content description (for accessibility purposes) */
+        /* Set the text and content description (for accessibility purposes) */
         forecastAdapterViewHolder.highTempView.setText(highString);
         forecastAdapterViewHolder.highTempView.setContentDescription(highA11y);
 
@@ -155,15 +151,15 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
          * Low (min) temperature *
          *************************/
         double lowInCelsius = currentWeather.getMin();
-         /*
-          * If the user's preference for weather is fahrenheit, formatTemperature will convert
-          * the temperature. This method will also append either °C or °F to the temperature
-          * String.
-          */
+        /*
+         * If the user's preference for weather is fahrenheit, formatTemperature will convert
+         * the temperature. This method will also append either °C or °F to the temperature
+         * String.
+         */
         String lowString = SunshineWeatherUtils.formatTemperature(mContext, lowInCelsius);
         String lowA11y = mContext.getString(R.string.a11y_low_temp, lowString);
 
-         /* Set the text and content description (for accessibility purposes) */
+        /* Set the text and content description (for accessibility purposes) */
         forecastAdapterViewHolder.lowTempView.setText(lowString);
         forecastAdapterViewHolder.lowTempView.setContentDescription(lowA11y);
     }
@@ -173,7 +169,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      * correct image based on whether the forecast is for today(large image) or the future(small image).
      *
      * @param weatherIconId Open Weather icon id
-     * @param position      Position in list
+     * @param position Position in list
      * @return Drawable image resource id for weather
      */
     private int getImageResourceId(int weatherIconId, int position) {
@@ -182,12 +178,10 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
         switch (viewType) {
 
             case VIEW_TYPE_TODAY:
-                return SunshineWeatherUtils
-                        .getLargeArtResourceIdForWeatherCondition(weatherIconId);
+                return SunshineWeatherUtils.getLargeArtResourceIdForWeatherCondition(weatherIconId);
 
             case VIEW_TYPE_FUTURE_DAY:
-                return SunshineWeatherUtils
-                        .getSmallArtResourceIdForWeatherCondition(weatherIconId);
+                return SunshineWeatherUtils.getSmallArtResourceIdForWeatherCondition(weatherIconId);
 
             default:
                 throw new IllegalArgumentException("Invalid view type, value of " + viewType);
@@ -200,8 +194,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      *
      * @return The number of items available in our forecast
      */
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         if (null == mForecast) return 0;
         return mForecast.size();
     }
@@ -216,8 +209,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      * @param position index within our RecyclerView and list
      * @return the view type (today or future day)
      */
-    @Override
-    public int getItemViewType(int position) {
+    @Override public int getItemViewType(int position) {
         if (mUseTodayLayout && position == 0) {
             return VIEW_TYPE_TODAY;
         } else {
@@ -232,7 +224,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      *
      * @param newForecast the new list of forecasts to use as ForecastAdapter's data source
      */
-    void swapForecast(final List<WeatherEntry> newForecast) {
+    void swapForecast(final List<WeatherSummaryEntry> newForecast) {
         mForecast = newForecast;
         notifyDataSetChanged();
     }
@@ -240,9 +232,6 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
     /**
      * Returns the the layout id depending on whether the list item is a normal item or the larger
      * "today" list item.
-     *
-     * @param viewType
-     * @return
      */
     private int getLayoutIdByType(int viewType) {
         switch (viewType) {
@@ -299,8 +288,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
          *
          * @param v the View that was clicked
          */
-        @Override
-        public void onClick(View v) {
+        @Override public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             Date date = mForecast.get(adapterPosition).getDate();
             mClickHandler.onItemClick(date);
