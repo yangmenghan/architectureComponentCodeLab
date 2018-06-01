@@ -80,6 +80,9 @@ public class SunshineRepository {
         // performed, we have nothing to do in this method.
         if (mInitialized) return;
         mInitialized = true;
+
+        mWeatherNetworkDataSource.scheduleRecurringFetchWeatherSync();
+
         mExecutors.diskIO().execute(() -> {
             if (isFetchNeeded()) {
                 startFetchWeatherService();

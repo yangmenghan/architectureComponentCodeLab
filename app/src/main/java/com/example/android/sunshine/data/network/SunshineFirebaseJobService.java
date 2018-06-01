@@ -16,12 +16,11 @@
 package com.example.android.sunshine.data.network;
 
 import android.util.Log;
-
+import com.example.android.sunshine.utilities.InjectorUtils;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.firebase.jobdispatcher.RetryStrategy;
-
 
 public class SunshineFirebaseJobService extends JobService {
     private static final String LOG_TAG = SunshineFirebaseJobService.class.getSimpleName();
@@ -36,11 +35,11 @@ public class SunshineFirebaseJobService extends JobService {
      *
      * @return whether there is more work remaining.
      */
-    @Override
-    public boolean onStartJob(final JobParameters jobParameters) {
+    @Override public boolean onStartJob(final JobParameters jobParameters) {
         Log.d(LOG_TAG, "Job service started");
 
-        // TODO Finish this method when instructed. Will eventually call the fetchWeather code
+        WeatherNetworkDataSource dataSource = InjectorUtils.provideNetworkDataSource(this);
+        dataSource.fetchWeather();
 
         jobFinished(jobParameters, false);
 
@@ -55,8 +54,7 @@ public class SunshineFirebaseJobService extends JobService {
      * @see Job.Builder#setRetryStrategy(RetryStrategy)
      * @see RetryStrategy
      */
-    @Override
-    public boolean onStopJob(JobParameters jobParameters) {
+    @Override public boolean onStopJob(JobParameters jobParameters) {
         return true;
     }
 }
