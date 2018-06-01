@@ -48,8 +48,10 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        long timestamp = getIntent().getLongExtra(WEATHER_ID_EXTRA, -1);
+        Date date = new Date(timestamp);
+
         mDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
-        Date date = SunshineDateUtils.getNormalizedUtcDateForToday();
 
         DetailViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(this, date);
 

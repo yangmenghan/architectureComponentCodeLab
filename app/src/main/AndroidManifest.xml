@@ -18,53 +18,54 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.sunshine">
 
-    <!-- This permission is necessary in order for Sunshine to perform network access. -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+  <!-- This permission is necessary in order for Sunshine to perform network access. -->
+  <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+  <application
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:supportsRtl="true"
+      android:theme="@style/AppTheme">
+
+    <!--The manifest entry for our MainActivity. Each Activity requires a manifest entry-->
+    <activity
+        android:name=".ui.list.MainActivity"
         android:label="@string/app_name"
-        android:supportsRtl="true"
+        android:launchMode="singleTop"
+        android:theme="@style/AppTheme.Forecast">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+
+    <!--The manifest entry for our DetailActivity. Each Activity requires a manifest entry-->
+    <activity
+        android:name=".ui.detail.DetailActivity"
+        android:label="@string/title_activity_detail"
+        android:parentActivityName=".ui.list.MainActivity"
         android:theme="@style/AppTheme">
+      <meta-data
+          android:name="android.support.PARENT_ACTIVITY"
+          android:value=".ui.list.MainActivity"/>
 
-        <!--The manifest entry for our MainActivity. Each Activity requires a manifest entry-->
-        <activity
-            android:name=".ui.list.MainActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme.Forecast">
-        </activity>
-
-        <!--The manifest entry for our DetailActivity. Each Activity requires a manifest entry-->
-        <activity
-            android:name=".ui.detail.DetailActivity"
-            android:label="@string/title_activity_detail"
-            android:parentActivityName=".ui.list.MainActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.list.MainActivity"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+    </activity>
 
 
-        <!--This is required for immediate syncs -->
-        <service
-            android:name=".data.network.SunshineSyncIntentService"
-            android:exported="false" />
+    <!--This is required for immediate syncs -->
+    <service
+        android:name=".data.network.SunshineSyncIntentService"
+        android:exported="false"/>
 
-        <!-- This is the Service declaration used in conjunction with FirebaseJobDispatcher -->
-        <service
-            android:name=".data.network.SunshineFirebaseJobService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
-            </intent-filter>
-        </service>
+    <!-- This is the Service declaration used in conjunction with FirebaseJobDispatcher -->
+    <service
+        android:name=".data.network.SunshineFirebaseJobService"
+        android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+      </intent-filter>
+    </service>
 
-    </application>
+  </application>
 </manifest>

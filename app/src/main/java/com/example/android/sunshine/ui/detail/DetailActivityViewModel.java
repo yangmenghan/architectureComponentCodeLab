@@ -29,12 +29,8 @@ public class DetailActivityViewModel extends ViewModel {
 
     // Weather forecast the user is looking at
     private LiveData<WeatherEntry> mWeather;
-    private SunshineRepository repository;
-    private Date date;
 
     public DetailActivityViewModel(SunshineRepository repository, Date date) {
-        this.repository = repository;
-        this.date = date;
         mWeather = repository.getWeatherByDate(date);
     }
 
