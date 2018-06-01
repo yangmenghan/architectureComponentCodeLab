@@ -10,5 +10,5 @@ import java.util.Date;
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) void bulkInsert(WeatherEntry... weathers);
 
-    @Query("SELECT * FROM weather WHERE date = :data") WeatherEntry getWeatherByDate(Date date);
+    @Query("SELECT * FROM weather WHERE date = :date") WeatherEntry getWeatherByDate(Date date);
 }
