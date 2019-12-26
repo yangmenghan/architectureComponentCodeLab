@@ -10,10 +10,10 @@ jobs:
     steps:
     - name: Retrive PR infos
       run: |
-        echo ${{ github.sha }}
-        echo ${{ github.ref }}
-        echo Add other actions to build,
-        echo test, and deploy your project.
+        echo the commit sha is ${{ github.sha }}
+        echo the branch name is ${{ github.event.pull_request.head.ref }}
+        echo the repo url is ${{ github.event.pull_request.repo.url }}
+       
     - name: Trigger Api tests
       uses: wei/curl@v1.1.1
       with:
