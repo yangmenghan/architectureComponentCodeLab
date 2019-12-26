@@ -12,7 +12,7 @@ jobs:
       run: |
         echo the commit sha is ${{ github.sha }}
         echo the branch name is ${{ github.event.pull_request.head.ref }}
-        echo the repo url is ${{ github.event.pull_request.repo.url }}
+        echo the repo url is https://github.com/${{ github.repository }}
        
     - name: Trigger Api tests
       uses: wei/curl@v1.1.1
